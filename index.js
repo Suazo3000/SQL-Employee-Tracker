@@ -103,7 +103,6 @@ function viewAllEmployees() {
     FROM employee e
     LEFT JOIN roles r ON e.role_id = r.id
     LEFT JOIN departments d ON r.department_id = d.id
-    LEFT JOIN employee m ON e.manager_id = m.id;
     `;
     connection.query(query, (err, res) => {
         if (err) throw err;
@@ -567,15 +566,6 @@ function deleteDepartment() {
             });
     });
 }
-// Function to view Total Utilized Budget of Department
-function viewTotalUtilizedBudgetOfDepartment() {
-    const query = "SELECT * FROM departments";
-    connection.query(query, (err, res) => {
-        if (err) throw err;
-        const departmentChoices = res.map((department) => ({
-            name: department.department_name,
-            value: department.id,
-        }));
 
         // prompt the user to select a department
         inquirer
@@ -586,20 +576,7 @@ function viewTotalUtilizedBudgetOfDepartment() {
                     "Which department do you want to calculate the total salary for?",
                 choices: departmentChoices,
             })
-            .then((answer) => {
-                // calculate the total salary for the selected department
-                const query =
-                    `SELECT 
-                    departments.department_name AS department,
-                    SUM(roles.salary) AS total_salary
-                  FROM 
-                    departments
-                    INNER JOIN roles ON departments.id = roles.department_id
-                    INNER JOIN employee ON roles.id = employee.role_id
-                  WHERE 
-                    departments.id = ?
-                  GROUP BY 
-                    departments.id;`;
+           
                 connection.query(query, [answer.departmentId], (err, res) => {
                     if (err) throw err;
                     const totalSalary = res[0].total_salary;

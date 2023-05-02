@@ -1,6 +1,6 @@
 # SQL Employee Tracker
 
-Git Hub link:
+Git Hub link: https://github.com/Suazo3000/SQL-Employee-Tracker
 
 ## Description
 
@@ -24,7 +24,7 @@ The motivation behind this project is to develop an easy-to-use application that
 
 ## Installation
 
-1. Clone the repository: 
+1. Clone the repository: https://github.com/Suazo3000/SQL-Employee-Tracker
 2. Install the following packages:
 3. Inquirer.js: Version 8.2.4
 4. MySQL2: Version 3.1.2
