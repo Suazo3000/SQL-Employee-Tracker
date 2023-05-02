@@ -26,7 +26,7 @@ The motivation behind this project is to develop an easy-to-use application that
 
 1. Clone the repository: https://github.com/Suazo3000/SQL-Employee-Tracker
 2. Install the following packages:
-3. Inquirer.js: Version 8.2.4
+3. Inquirer.js: Version 9.1.5
 4. MySQL2: Version 3.1.2
 5. Click and open the repository with a code editor.
 6. Then open the file with an integrated terminal, once the packages have been installed and ensure the documentation has been cloned.

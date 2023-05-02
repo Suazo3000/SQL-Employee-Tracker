@@ -23,7 +23,7 @@ function start() {
     inquirer
         .prompt({
             type: "list",
-            name: "action",
+            name: "items",
             choices: [
                 "View all departments",
                 "View all roles",
@@ -32,8 +32,8 @@ function start() {
                 "Add a role",
                 "Add an employee",
                 "Update an employee role",
-                "View Employees by Department",
-                "Delete Departments | Roles | Employees",
+                "View employees by department",
+                "Delete departments | roles | employees",
                 "Exit",
             ],
         })
@@ -80,7 +80,6 @@ function viewAllDepartments() {
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
-        // restart the application
         start();
     });
 }
@@ -91,7 +90,6 @@ function viewAllRoles() {
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
-        // restart the application
         start();
     });
 }
@@ -118,7 +116,7 @@ function addDepartment() {
         .prompt({
             type: "input",
             name: "name",
-            message: "Enter the name of the new department:",
+            message: "Input the name of the new department:",
         })
         .then((answer) => {
             console.log(answer.name);
@@ -142,16 +140,16 @@ function addRole() {
                 {
                     type: "input",
                     name: "job title",
-                    message: "Enter the title of the new role:",
+                    message: "Enter the title of new role:",
                 },
                 {
                     type: "input",
                     name: "role ID",
-                    message: "Enter the role ID:",
+                    message: "Input the role ID:",
                     {
                         type: "list",
                         name: "department",
-                        message: "Select the department for the new role:",
+                        message: "Select department for new role:",
                         choices: res.map(
                             (department) => department.department_name
                         ),
@@ -160,7 +158,7 @@ function addRole() {
                 {
                     type: "input",
                     name: "salary",
-                    message: "Enter the salary of the new role:",
+                    message: "Enter salary of new role:",
                 },
                 
             ])
@@ -223,23 +221,23 @@ function addEmployee() {
                         {
                             type: "input",
                             name: "firstName",
-                            message: "Enter the employee's first name:",
+                            message: "Enter employees first name:",
                         },
                         {
                             type: "input",
                             name: "lastName",
-                            message: "Enter the employee's last name:",
+                            message: "Enter employees last name:",
                         },
                         {
                             type: "list",
                             name: "roleId",
-                            message: "Select the employee role:",
+                            message: "Select employee role:",
                             choices: roles,
                         },
                         {
                             type: "list",
                             name: "managerId",
-                            message: "Select the employee manager:",
+                            message: "Select employee manager:",
                             choices: [
                                 { name: "None", value: null },
                                 ...managers,
@@ -304,7 +302,7 @@ function addManager() {
                     {
                         type: "list",
                         name: "manager",
-                        message: "Select the employee's manager:",
+                        message: "Select employee manager:",
                         choices: resEmployees.map(
                             (employee) =>
                                 `${employee.first_name} ${employee.last_name}`
@@ -391,7 +389,6 @@ function updateEmployeeRole() {
                             console.log(
                                 `Updated ${employee.first_name} ${employee.last_name}'s role to ${role.title} in the database!`
                             );
-                            // restart the application
                             start();
                         }
                     );
@@ -403,12 +400,10 @@ function updateEmployeeRole() {
     connection.query(query, (err, res) => {
         if (err) throw err;
 
-
-        // restart the application
         start();
     });
 }
-// Function to view Employees by Department
+// view employees by department
 function viewEmployeesByDepartment() {
     const query =
         "SELECT departments.department_name, employee.first_name, employee.last_name FROM employee INNER JOIN roles ON employee.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id ORDER BY departments.department_name ASC";
@@ -417,17 +412,15 @@ function viewEmployeesByDepartment() {
         if (err) throw err;
         console.log("\nEmployees by department:");
         console.table(res);
-        // restart the application
         start();
     });
 }
-// Function to DELETE Departments Roles Employees
 function deleteDepartmentsRolesEmployees() {
     inquirer
         .prompt({
             type: "list",
             name: "data",
-            message: "What would you like to delete?",
+            message: "What choice would you like to remove/delete?",
             choices: ["Employee", "Role", "Department"],
         })
         .then((answer) => {
@@ -457,17 +450,15 @@ function deleteEmployee() {
             name: `${employee.first_name} ${employee.last_name}`,
             value: employee.id,
         }));
-        employeeList.push({ name: "Go Back", value: "back" }); // add a "back" option
-        inquirer
+        employeeList.push({ name: "Go Back", value: "back" });
             .prompt({
                 type: "list",
                 name: "id",
-                message: "Select the employee you want to delete:",
+                message: "select the employee you want to delete:",
                 choices: employeeList,
             })
             .then((answer) => {
                 if (answer.id === "back") {
-                    // check if user selected "back"
                     deleteDepartmentsRolesEmployees();
                     return;
                 }
@@ -475,22 +466,19 @@ function deleteEmployee() {
                 connection.query(query, [answer.id], (err, res) => {
                     if (err) throw err;
                     console.log(
-                        `Deleted employee with ID ${answer.id} from the database!`
+                        `Remove employee with ID ${answer.id} from the database!`
                         
                     );
-                    // restart the application
                     start();
                 });
             });
     });
 }
-// Function to DELETE ROLE
 function deleteRole() {
-    // retrieve all available roles from the database
     const query = "SELECT * FROM roles";
     connection.query(query, (err, res) => {
         if (err) throw err;
-        // map through the retrieved roles to create an array of choices
+        // map that retrieved roles 
         const choices = res.map((role) => ({
             name: `${role.title} (${role.id}) - ${role.salary}`,
             value: role.id,
@@ -522,9 +510,7 @@ function deleteRole() {
             });
     });
 }
-// Fuction to DELETE Department
 function deleteDepartment() {
-    // get the list of departments
     const query = "SELECT * FROM departments";
     connection.query(query, (err, res) => {
         if (err) throw err;
@@ -532,8 +518,6 @@ function deleteDepartment() {
             name: department.department_name,
             value: department.id,
         }));
-
-        // prompt the user to select a department
         inquirer
             .prompt({
                 type: "list",
@@ -546,7 +530,7 @@ function deleteDepartment() {
             })
             .then((answer) => {
                 if (answer.departmentId === "back") {
-                    // go back to the previous menu
+            
                     deleteDepartmentsRolesEmployees();
                 } else {
                     const query = "DELETE FROM departments WHERE id = ?";
@@ -558,7 +542,6 @@ function deleteDepartment() {
                             console.log(
                                 `Deleted department with ID ${answer.departmentId} from the database!`
                             );
-                            // restart the application
                             start();
                         }
                     );
@@ -566,30 +549,6 @@ function deleteDepartment() {
             });
     });
 }
-
-        // prompt the user to select a department
-        inquirer
-            .prompt({
-                type: "list",
-                name: "departmentId",
-                message:
-                    "Which department do you want to calculate the total salary for?",
-                choices: departmentChoices,
-            })
-           
-                connection.query(query, [answer.departmentId], (err, res) => {
-                    if (err) throw err;
-                    const totalSalary = res[0].total_salary;
-                    console.log(
-                        `The total salary for employees in this department is $${totalSalary}`
-                    );
-                    // restart the application
-                    start();
-                });
-            });
-    });
-}
-
-// close the connection when the application exits
+// close the connection 
 process.on("exit", () => {
     connection.end();
