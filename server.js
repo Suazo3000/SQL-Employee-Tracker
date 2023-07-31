@@ -1,8 +1,13 @@
 const inquirer = require('inquire');
 const mysql = require('mysql2');
 
-const PORT = process.env.PORT || 3306;
-
+const connection = mysql.createConnection({
+    host: "localhost",
+    port: 3001,
+    user: "root",
+    password: "",
+    database: "employeeTracker_db",
+});
 
 function start() {
     inquirer
